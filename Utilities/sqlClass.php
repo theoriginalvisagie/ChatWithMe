@@ -4,7 +4,7 @@
         $host = "localhost";
         $user = "root";
         $pass = "";
-        $db = "covid_results"; 
+        $db = "chat_with_me"; 
 
         $conn = new mysqli($host, $user, $pass, $db) or die(mysqli_connect_error($conn));
 
@@ -43,6 +43,14 @@
         return $columns;
         // echo "<pre>".print_r($columns,true)."</pre>";
         
+    }
+
+    function fetch_db_array($array){
+        foreach($array as $key=>$value){
+            foreach($value as $keyD=>$valueD){
+
+            }
+        }
     }
 
     function exeSQL($sql){
