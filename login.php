@@ -62,15 +62,23 @@
                             Register
                         </div>
                         <div class='card-body'>
-                            <form method='post' id='registerUser' name='registerUser' onchange=checkAllFields()>
+                            <form method='post' id='registerUserForm' name='registerUserForm' onchange=checkAllFields()>
                                 <h5 class='card-title'>Register New Account</h5>";
                                 $result = getTableColumns("users","id,dateCreated,access_rights");
+                                // print_r($result);
                                 foreach($result as $key=>$v){
                                     $placeholder = ucwords(str_replace("_"," ",$v['column']));
-                                    echo "<input type='text' name='{$v['column']}' id='{$v['column']}' class='form-control' placeholder='$placeholder'><br>";
+                                    if($v['column']=="email"){
+                                        $type = "email";
+                                    }else if($v['column']=="password"){
+                                        $type = "password";
+                                    }else{
+                                        $type = "text";
+                                    }
+                                    echo "<input type='$type' name='{$v['column']}' id='{$v['column']}' class='form-control' placeholder='$placeholder' style='borderColr:#5afc03'><br>";
                                 }
                                 // echo "<pre>".print_r($result,true)."</pre>";
-                           echo"<input type='button' name='registerUser' id='registerUser' value='Register' class='btn btn-success' onclick='registerNewUser()'>
+                           echo"<input type='button' disabled name='registerUser' id='registerUser' value='Register' class='btn btn-success' onclick='registerNewUser()'>
                                 <input type='submit' name='cancel' id='cancel' value='Cancel' class='btn btn-default'>
                             </form>
                         </div>
