@@ -1,20 +1,18 @@
 function registerNewUser(){
-    // alert("yeas");
+    
     var data = $('#registerUser').serialize();
+    data = data.replace("%40","@");
 
-    console.log(queryString);
-
-    $.ajax(   // request url
-    {
+    $.ajax({
         url: "ajax/ajaxData.php",
         type: 'post',
-        data: ({'action':"registerNewUser",data:"registerNewUser"}),
-        success: function (data, status, xhr) {// success callback function
-            $('p').append(data);
-    }
-});
+        data: ({'action':"registerNewUser",data:data}),
+        success: function (response) {
+            Swal.fire(response)
+        }
+    });
 }
 
-function registerNewUser2(){
-
+function checkAllFields(){
+    alert("Check");
 }

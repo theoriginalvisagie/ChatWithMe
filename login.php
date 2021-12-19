@@ -4,6 +4,7 @@
         <script src="Libraries/Bootstrap/bootstrap-5.1.3-dist/js/bootstrap.min.js"></script>
         <script src="script/js.js?v=2"></script>
         <script src="script/jquery.js?v=2"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <body>
@@ -61,7 +62,7 @@
                             Register
                         </div>
                         <div class='card-body'>
-                            <form method='post' id='registerUser' name='registerUser'>
+                            <form method='post' id='registerUser' name='registerUser' onchange=checkAllFields()>
                                 <h5 class='card-title'>Register New Account</h5>";
                                 $result = getTableColumns("users","id,dateCreated,access_rights");
                                 foreach($result as $key=>$v){
