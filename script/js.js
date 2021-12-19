@@ -21,14 +21,25 @@ function checkAllFields(){
 
     for (var i = 0; i < elements.length; i++) {
         if (elements[i].value === ""){
-            // document.getElementById(elements[i].id).style.border = "3px solid red";
-            // console.log("it's an empty textfield");
             emptyInputs--;
-            // console.log(elements[i].name + " empty");
         }
     }
-    console.log(emptyInputs);
-    if(emptyInputs >= 5){
+
+    if(emptyInputs >=5){
         registerButton.disabled = false;
+    }
+}
+
+function confirmPasswordMatch(){
+    var password = document.getElementById("password").value;
+    var confirmPassword = document.getElementById("confirmPassword").value;
+
+    if(password === confirmPassword){
+        document.getElementById("confirmPasswordLabel").style.display = "none";
+        // return true;
+    }else{
+        document.getElementById("confirmPasswordLabel").style.display = "block";
+        document.getElementById("registerUser").disabled = true;
+        // return false;
     }
 }

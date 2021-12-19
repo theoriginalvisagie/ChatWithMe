@@ -75,8 +75,11 @@
                                     }else{
                                         $type = "text";
                                     }
-                                    echo "<input type='$type' name='{$v['column']}' id='{$v['column']}' class='form-control' placeholder='$placeholder' style='borderColr:#5afc03'><br>";
+                                    echo "<input type='$type' name='{$v['column']}' id='{$v['column']}' class='form-control' placeholder='$placeholder'><br>";
                                 }
+                                echo "<label style='display:none; color:red;' name='confirmPasswordLabel' id='confirmPasswordLabel'>Passwords don't match</label>";
+                                echo "<input type='password' name='confirmPassword' id='confirmPassword' class='form-control' placeholder='Confirm Password' onchange='confirmPasswordMatch(this.value)'><br>";
+
                                 // echo "<pre>".print_r($result,true)."</pre>";
                            echo"<input type='button' disabled name='registerUser' id='registerUser' value='Register' class='btn btn-success' onclick='registerNewUser()'>
                                 <input type='submit' name='cancel' id='cancel' value='Cancel' class='btn btn-default'>
