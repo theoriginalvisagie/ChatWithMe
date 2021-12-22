@@ -3,7 +3,7 @@
         <link rel="stylesheet" href="Libraries/Bootstrap/bootstrap-5.1.3-dist/css/bootstrap.min.css"/>
         <script src="Libraries/Bootstrap/bootstrap-5.1.3-dist/js/bootstrap.min.js"></script>
         <script src="script/js.js?v=2"></script>
-        <script src="script/jquery.js?v=2"></script>
+        <script src="script/jquery.js?v=3"></script>
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
@@ -53,6 +53,9 @@
         }
 
         function displayRegister(){
+            $result = getTableColumns("users","id,dateCreated,access_rights");//onchange=checkAllFields()
+            $js = "";
+
             echo "<div class='container' style='margin-top:10%'>   
                                 
             <div class='row align-items-center justify-content-center'>";
@@ -64,8 +67,7 @@
                         <div class='card-body'>
                             <form method='post' id='registerUserForm' name='registerUserForm' >
                                 <h5 class='card-title'>Register New Account</h5>";
-                                $result = getTableColumns("users","id,dateCreated,access_rights");//onchange=checkAllFields()
-                                // print_r($result);
+
                                 foreach($result as $key=>$v){
                                     $placeholder = ucwords(str_replace("_"," ",$v['column']));
                                     if($v['column']=="email"){
@@ -75,7 +77,20 @@
                                     }else{
                                         $type = "text";
                                     }
-                                    echo "<input type='$type' name='{$v['column']}' id='{$v['column']}' class='form-control' placeholder='$placeholder'><br>";
+                                    if($type=="password"){
+                                        // echo "<label style='display:none;' name='passwordStrength' id='passwordStrength' style='font-size:6px;'><i>Strength: </i></label>";
+                                        echo "<div style='display:none;' name='passwordStrength' id='passwordStrength'>
+                                                <p style='font-size:10px; margin-bottom:0;'>Password must contain at least:</p>
+                                                <ul style='font-size:10px;'>
+                                                    <li>One Uppercase</li>
+                                                    <li>One Number</li>
+                                                    <li>One Special Character</li>
+                                                    <li>8 Characters</li>
+                                                </ul>
+                                              </div>";
+                                        $js = "onkeyup='checkStrength(this.value)'";
+                                    }
+                                    echo "<input type='$type' name='{$v['column']}' id='{$v['column']}' class='form-control' placeholder='$placeholder' $js><br>";
                                 }
                                 echo "<label style='display:none; color:red;' name='confirmPasswordLabel' id='confirmPasswordLabel'>Passwords don't match</label>";
                                 echo "<input type='password' name='confirmPassword' id='confirmPassword' class='form-control' placeholder='Confirm Password' onchange='confirmPasswordMatch(this.value)'><br>";

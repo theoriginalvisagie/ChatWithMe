@@ -47,3 +47,20 @@ function confirmPasswordMatch(){
         return false;
     }
 }
+
+function checkStrength(password){
+    console.log(password);
+    var checkSpecial = /[*@!#%&()^~{}]+/.test(password),
+        checkUpper = /[A-Z]+/.test(password),
+        checkLower = /[a-z]+/.test(password);
+
+    if(checkSpecial && checkUpper && checkLower && password.length>=8){
+        console.log("true");
+    }else{
+        console.log("false");
+        document.getElementById("passwordStrength").style.display = "block";
+    }
+
+    
+        // r = false;
+}
