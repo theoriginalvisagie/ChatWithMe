@@ -2,6 +2,7 @@
     <head></head>
         <link rel="stylesheet" href="Libraries/Bootstrap/bootstrap-5.1.3-dist/css/bootstrap.min.css"/>
         <script src="Libraries/Bootstrap/bootstrap-5.1.3-dist/js/bootstrap.min.js"></script>
+        <link href="Libraries/FontAwesome/fontawesome-free-5.15.4-web/css/all.css" rel="stylesheet">
         <script src="script/js.js?v=2"></script>
         <script src="script/jquery.js?v=3"></script>
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -81,11 +82,12 @@
                                         // echo "<label style='display:none;' name='passwordStrength' id='passwordStrength' style='font-size:6px;'><i>Strength: </i></label>";
                                         echo "<div style='display:none;' name='passwordStrength' id='passwordStrength'>
                                                 <p style='font-size:10px; margin-bottom:0;'>Password must contain at least:</p>
-                                                <ul style='font-size:10px;'>
-                                                    <li>One Uppercase</li>
-                                                    <li>One Number</li>
-                                                    <li>One Special Character</li>
-                                                    <li>8 Characters</li>
+                                                <ul style='font-size:10px; list-style:none'>
+                                                
+                                                    <li><i class='fas fa-times' style='color:red;' id='upperCase'></i> One Uppercase</li>
+                                                    <li><i class='fas fa-times' style='color:red;' id='numberCount'></i> One Number</li>
+                                                    <li><i class='fas fa-times' style='color:red;' id='specialChar'></i> One Special Character</li>
+                                                    <li><i class='fas fa-times' style='color:red;' id='numberChar'></i> 8 Characters</li>
                                                 </ul>
                                               </div>";
                                         $js = "onkeyup='checkStrength(this.value)'";

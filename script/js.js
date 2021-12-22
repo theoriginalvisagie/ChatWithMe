@@ -1,11 +1,11 @@
-function registerNewUser(){
-    
+function registerNewUser(){    
     var data = $('#registerUserForm').serialize();
     data = data.replace("%40","@");
 
     console.log(confirmPasswordMatch());
     console.log(checkAllFields());
-    if(confirmPasswordMatch()==true && checkAllFields()==true){
+    console.log(checkStrength());
+    if(confirmPasswordMatch()==true && checkAllFields()==true && checkStrength()==true){
         $.ajax({
             url: "ajax/ajaxData.php",
             type: 'post',
@@ -48,19 +48,47 @@ function confirmPasswordMatch(){
     }
 }
 
-function checkStrength(password){
-    console.log(password);
+function checkStrength(){
+    password = document.getElementById("password").value;
     var checkSpecial = /[*@!#%&()^~{}]+/.test(password),
         checkUpper = /[A-Z]+/.test(password),
-        checkLower = /[a-z]+/.test(password);
+        checkNumber = /[0-9]+/.test(password);
 
-    if(checkSpecial && checkUpper && checkLower && password.length>=8){
-        console.log("true");
+    if(checkSpecial){
+        document.getElementById("specialChar").style.color = "green";
+        document.getElementById("specialChar").className = "fas fa-check";
     }else{
-        console.log("false");
-        document.getElementById("passwordStrength").style.display = "block";
+        document.getElementById("specialChar").style.color = "red";
+        document.getElementById("specialChar").className = "fas fa-times";
     }
 
-    
-        // r = false;
+    if(checkUpper){
+        document.getElementById("upperCase").style.color = "green";
+        document.getElementById("upperCase").className = "fas fa-check";
+    }else{
+        document.getElementById("upperCase").style.color = "red";
+        document.getElementById("upperCase").className = "fas fa-times"; 
+    }
+
+    if(checkNumber){
+        document.getElementById("numberCount").style.color = "green";
+        document.getElementById("numberCount").className = "fas fa-check";
+    }else{
+        document.getElementById("numberCount").style.color = "red";
+        document.getElementById("numberCount").className = "fas fa-times";
+    }
+
+    if(password.length>=8){
+        document.getElementById("numberChar").style.color = "green";
+        document.getElementById("numberChar").className = "fas fa-check";
+    }else{
+        document.getElementById("numberChar").style.color = "red";
+        document.getElementById("numberChar").className = "fas fa-times";
+    }
+
+    if(checkSpecial && checkUpper && checkNumber && password.length>=8){
+        return true;
+    }else{
+        document.getElementById("passwordStrength").style.display = "block";
+    }
 }
