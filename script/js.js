@@ -3,18 +3,23 @@ function registerNewUser(){
     var data = $('#registerUserForm').serialize();
     data = data.replace("%40","@");
 
-    $.ajax({
-        url: "ajax/ajaxData.php",
-        type: 'post',
-        data: ({'action':"registerNewUser",data:data}),
-        success: function (response) {
-            Swal.fire(response)
-        }
-    });
+    console.log(confirmPasswordMatch());
+    console.log(checkAllFields());
+    if(confirmPasswordMatch()==true && checkAllFields()==true){
+        $.ajax({
+            url: "ajax/ajaxData.php",
+            type: 'post',
+            data: ({'action':"registerNewUser",data:data}),
+            success: function (response) {
+                Swal.fire(response);
+            }
+        });
+    }else{
+        Swal.fire("Please check that all information is correct!");
+    }
 }
 
 function checkAllFields(){
-    // alert("Check");
     var registerButton = document.getElementById("registerUser");
     var emptyInputs = 5;
     var elements = document.getElementById("registerUserForm").elements;
@@ -26,7 +31,7 @@ function checkAllFields(){
     }
 
     if(emptyInputs >=5){
-        registerButton.disabled = false;
+        return true;
     }
 }
 
@@ -36,10 +41,9 @@ function confirmPasswordMatch(){
 
     if(password === confirmPassword){
         document.getElementById("confirmPasswordLabel").style.display = "none";
-        // return true;
+        return true;
     }else{
         document.getElementById("confirmPasswordLabel").style.display = "block";
-        document.getElementById("registerUser").disabled = true;
-        // return false;
+        return false;
     }
 }

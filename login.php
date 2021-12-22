@@ -62,9 +62,9 @@
                             Register
                         </div>
                         <div class='card-body'>
-                            <form method='post' id='registerUserForm' name='registerUserForm' onchange=checkAllFields()>
+                            <form method='post' id='registerUserForm' name='registerUserForm' >
                                 <h5 class='card-title'>Register New Account</h5>";
-                                $result = getTableColumns("users","id,dateCreated,access_rights");
+                                $result = getTableColumns("users","id,dateCreated,access_rights");//onchange=checkAllFields()
                                 // print_r($result);
                                 foreach($result as $key=>$v){
                                     $placeholder = ucwords(str_replace("_"," ",$v['column']));
@@ -81,7 +81,7 @@
                                 echo "<input type='password' name='confirmPassword' id='confirmPassword' class='form-control' placeholder='Confirm Password' onchange='confirmPasswordMatch(this.value)'><br>";
 
                                 // echo "<pre>".print_r($result,true)."</pre>";
-                           echo"<input type='button' disabled name='registerUser' id='registerUser' value='Register' class='btn btn-success' onclick='registerNewUser()'>
+                           echo"<input type='button' name='registerUser' id='registerUser' value='Register' class='btn btn-success' onclick='registerNewUser()'>
                                 <input type='submit' name='cancel' id='cancel' value='Cancel' class='btn btn-default'>
                             </form>
                         </div>
