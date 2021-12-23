@@ -53,6 +53,13 @@
         }
     }
 
+    function updateData($sql){
+        $conn = dbConnect();
+        $result = $conn->query($sql);
+        return $result;
+        $conn->close();
+    }
+
     function sqlINSERT($sql){
         $conn = dbConnect();
         $result = $conn->query($sql);

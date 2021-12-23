@@ -13,7 +13,7 @@ function registerNewUser(){
             type: 'post',
             data: ({'action':"registerNewUser",data:data}),
             success: function (response) {
-                Swal.fire(response);
+                // Swal.fire(response);
                 Swal.fire({
                     icon: 'success',
                     title: 'Welcome',
@@ -142,5 +142,68 @@ function checkStrength(){
         return true;
     }else{
         document.getElementById("passwordStrength").style.display = "block";
+    }
+}
+
+function checkUserExsists(){
+    // alert("HI");
+    var username = document.getElementById("username").value;
+    $.ajax({
+        url: "ajax/ajaxData.php",
+        type: 'post',
+        data: ({'action':"checkUser",username:username}),
+        success: function (response) {
+            if(response == "true"){
+                // document.getElementById("changePassword").value = "Save";  
+                document.getElementById("changePassword").style.display = "block";
+                document.getElementById("checkPassword").style.display = "none";             
+                document.getElementById("confirmPassword").style.display = "block";
+                document.getElementById("password").style.display = "block";
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'User does not exist'
+                  })
+            }
+           console.log(response)
+        }
+    });
+
+    
+}
+
+function changUserPassword(){
+    var username = document.getElementById("username").value;
+    var data = username+"|";
+    if(confirmPasswordMatch() == true && checkStrength() == true){
+        newPassword = document.getElementById("password").value;
+        data = data + newPassword;
+        $.ajax({
+            url: "ajax/ajaxData.php",
+            type: 'post',
+            data: ({"action":"changeUserPassword","data":data}),
+            success: function (response) {
+                console.log(response);
+                if(response == "true"){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Password changed succesfully, please log in again.'
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                            // location.reload();
+                            window.location.href = "http://localhost/ChatWithMe/login.php";
+                        }
+                      })
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'An error occured, please try again.'
+                      })
+                }
+            }
+        });
     }
 }

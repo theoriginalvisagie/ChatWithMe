@@ -57,7 +57,31 @@
         }else{
             echo "false";
         }
+    }else if($_POST['action']=="checkUser"){
+        $sql = "SELECT * FROM users WHERE username='{$_POST['username']}' OR email='{$_POST['username']}'";
+
+        $response = exeSQL($sql);
+
+        if($response){
+            echo "true";
+        }else{
+            echo "false";
+        }
+
+    }else if($_POST['action']=="changeUserPassword"){
+        $user = substr($_POST['data'],0,strpos($_POST['data'],"|"));
+        $password = substr($_POST['data'],strpos($_POST['data'],"|")+1);
+
+        $sql = "UPDATE users set password='$password' WHERE username='$user'";
+        // echo $sql;
+        $response = updateData($sql);
+
+        if($response){
+            echo "true";
+        }else{
+            echo "false";
+        }
     }
-    // echo "<pre>".print_r($userInforamtion,true)."</pre>";
+    // echo "<pre>".print_r($_POST,true)."</pre>";
 
 ?>
