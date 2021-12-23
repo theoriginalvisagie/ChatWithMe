@@ -14,10 +14,19 @@ function registerNewUser(){
             data: ({'action':"registerNewUser",data:data}),
             success: function (response) {
                 Swal.fire(response);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Welcome',
+                    text: response
+                  })
             }
         });
     }else{
-        Swal.fire("Please check that all information is correct!");
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please check that all information is correct!'
+          })
     }
 }
 
