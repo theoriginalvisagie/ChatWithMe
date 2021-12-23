@@ -71,19 +71,22 @@
 
                                 foreach($result as $key=>$v){
                                     $placeholder = ucwords(str_replace("_"," ",$v['column']));
-                                    if($v['column']=="email"){
+
+                                    if($v['column'] == "email"){
                                         $type = "email";
-                                    }else if($v['column']=="password"){
+                                    }else if($v['column'] == "password"){
                                         $type = "password";
-                                    }else{
+                                    }else if($v['column'] == "username"){
+                                        $type = "username";}
+                                    else{
                                         $type = "text";
                                     }
-                                    if($type=="password"){
+
+                                    if($type == "password"){
                                         // echo "<label style='display:none;' name='passwordStrength' id='passwordStrength' style='font-size:6px;'><i>Strength: </i></label>";
                                         echo "<div style='display:none;' name='passwordStrength' id='passwordStrength'>
                                                 <p style='font-size:10px; margin-bottom:0;'>Password must contain at least:</p>
-                                                <ul style='font-size:10px; list-style:none'>
-                                                
+                                                <ul style='font-size:10px; list-style:none'>                                               
                                                     <li><i class='fas fa-times' style='color:red;' id='upperCase'></i> One Uppercase</li>
                                                     <li><i class='fas fa-times' style='color:red;' id='numberCount'></i> One Number</li>
                                                     <li><i class='fas fa-times' style='color:red;' id='specialChar'></i> One Special Character</li>
@@ -91,11 +94,17 @@
                                                 </ul>
                                               </div>";
                                         $js = "onkeyup='checkStrength(this.value)'";
+                                    }else if($type == "email"){
+                                        $js = "onkeyup='checkEmail()'";
+                                        echo "<label style='display:none; color:red;' name='checkEmailExists' id='checkEmailExists'>Email all ready in use</label>";
+                                    }else if($type == "username"){
+                                        $js = "onkeyup='checkUsername()'";
+                                        echo "<label style='display:none; color:red;' name='checkUsernameExists' id='checkUsernameExists'>Username exsits</label>";
                                     }
                                     echo "<input type='$type' name='{$v['column']}' id='{$v['column']}' class='form-control' placeholder='$placeholder' $js><br>";
                                 }
                                 echo "<label style='display:none; color:red;' name='confirmPasswordLabel' id='confirmPasswordLabel'>Passwords don't match</label>";
-                                echo "<input type='password' name='confirmPassword' id='confirmPassword' class='form-control' placeholder='Confirm Password' onchange='confirmPasswordMatch(this.value)'><br>";
+                                echo "<input type='password' name='confirmPassword' id='confirmPassword' class='form-control' placeholder='Confirm Password' onkeyup='confirmPasswordMatch()'><br>";
 
                                 // echo "<pre>".print_r($result,true)."</pre>";
                            echo"<input type='button' name='registerUser' id='registerUser' value='Register' class='btn btn-success' onclick='registerNewUser()'>

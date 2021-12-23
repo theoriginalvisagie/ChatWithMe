@@ -18,6 +18,11 @@
 
         foreach($userInforamtion as $key=>$value){
             $columns .= $key.",";
+            
+            if($key=="emial"){
+                $value = strtolower($value);
+            }
+
             $data .= "'".$value."',";
         }
         $columns = rtrim($columns,",");
@@ -30,6 +35,27 @@
             echo "New User Created";
         }else{
             echo "Error";
+        }
+    }else if($_POST['action']=="checkEmail"){
+        $email = strtolower($_POST['email']);
+        $sql = "SELECT * FROM users WHERE email='$email'";
+
+        $response = exeSQL($sql);
+
+        if($response){
+            echo "true";
+        }else{
+            echo "false";
+        }
+    }else if($_POST['action']=="checkUsername"){
+        $sql = "SELECT * FROM users WHERE username='{$_POST['username']}'";
+
+        $response = exeSQL($sql);
+
+        if($response){
+            echo "true";
+        }else{
+            echo "false";
         }
     }
     // echo "<pre>".print_r($userInforamtion,true)."</pre>";

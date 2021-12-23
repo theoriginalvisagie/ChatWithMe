@@ -2,10 +2,12 @@ function registerNewUser(){
     var data = $('#registerUserForm').serialize();
     data = data.replace("%40","@");
 
-    console.log(confirmPasswordMatch());
-    console.log(checkAllFields());
-    console.log(checkStrength());
-    if(confirmPasswordMatch()==true && checkAllFields()==true && checkStrength()==true){
+    console.log("password " + confirmPasswordMatch());
+    console.log("Fields " + checkAllFields());
+    console.log("Strength " + checkStrength());
+    console.log("Username " + checkUsername());
+    console.log("email " + checkEmail());
+    if(confirmPasswordMatch()==true && checkAllFields()==true && checkStrength()==true){ //&& checkUsername()==true && checkEmail()==true){
         $.ajax({
             url: "ajax/ajaxData.php",
             type: 'post',
@@ -46,6 +48,42 @@ function confirmPasswordMatch(){
         document.getElementById("confirmPasswordLabel").style.display = "block";
         return false;
     }
+}
+
+function checkUsername(){
+    username = document.getElementById("username").value;
+    $.ajax({
+        url: "ajax/ajaxData.php",
+        type: 'post',
+        data: ({'action':"checkUsername",username:username}),
+        success: function (response) {
+            if(response == "true"){
+                document.getElementById("email").style.color = "red";
+                document.getElementById("checkUsernameExists").style.display = "block";
+            }else{
+                document.getElementById("checkUsernameExists").style.display = "none";
+                document.getElementById("email").style.color = "black";
+            }
+        }
+    });
+}
+
+function checkEmail(){
+    email = document.getElementById("email").value;
+    $.ajax({
+        url: "ajax/ajaxData.php",
+        type: 'post',
+        data: ({'action':"checkEmail",email:email}),
+        success: function (response) {
+            if(response == "true"){
+                document.getElementById("email").style.color = "red";
+                document.getElementById("checkEmailExists").style.display = "block";
+            }else{
+                document.getElementById("checkEmailExists").style.display = "none";
+                document.getElementById("email").style.color = "black";
+            }
+        }
+    });
 }
 
 function checkStrength(){
