@@ -17,7 +17,12 @@ function registerNewUser(){
                 Swal.fire({
                     icon: 'success',
                     title: 'Welcome',
-                    text: response
+                    text: response + ' ,click to login to your new account'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                        // location.reload();
+                        window.location.href = "http://localhost/ChatWithMe/login.php";
+                    }
                   })
             }
         });
