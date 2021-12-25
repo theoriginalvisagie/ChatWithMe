@@ -147,16 +147,15 @@
             
             $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
             $response = exeSQL($sql);
-            echo "<pre>".print_r($response,true)."</pre>";
             if($response){
+                session_start();
                 $_SESSION['username'] = $username;
                 $_SESSION['userID'] = $response[0]['id'];
                 $_SESSION['logedIn'] = "Yes";
                 $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
                 $_SESSION['time_logged_in'] = date('Y-m-d H:i:s');
                 $_SESSION['access_rights'] = getValues("users","access_rights","username='$username' AND id='{$response[0]['id']}'");
-                // $_SESSION['HTTP_FORWARD'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                // header("Location: admin/Models/Home/index.php");
+                header("Location: admin/Models/Home/index.php");
             }else if(!$response){
                 displayLogIn();
                 echo "<script>                     
@@ -165,7 +164,7 @@
             }
         }
         // echo "<pre>".print_r($_POST,true)."</pre>";
-        // echo "<pre>".print_r($_SESSION,true)."</pre>";
+        echo "<pre>".print_r($_SESSION,true)."</pre>";
 
     ?>
     </body>
