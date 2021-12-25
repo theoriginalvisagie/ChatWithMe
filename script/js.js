@@ -207,3 +207,7 @@ function changUserPassword(){
         });
     }
 }
+
+function userLoginError(){
+    document.getElementById("logInError").style.display="block";
+}

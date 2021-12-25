@@ -13,16 +13,7 @@
         include_once("Utilities/sqlClass.php");
 
         if(isset($_POST['username']) && isset($_POST['password']) && !empty($_POST['username']) && !empty($_POST['password'])){
-            $sql = "SELECT * FROM users WHERE username='{$_POST['username']}' AND password='{$_POST['password']}'";
-            // echo $sql;
-            $result = exeSQL($sql);
-
-            if(!$result){
-                displayRegister();
-            }else{
-                displayLogIn();
-            }
-            
+            checkLogIn($_POST['username'],$_POST['password']);           
         }else if(isset($_POST['cancel'])){
             displayLogIn();
         }else if(isset($_POST['register'])){
@@ -45,6 +36,7 @@
                         <div class='card-body'>
                             <form method='post'>
                                 <h5 class='card-title'>Please log into your account</h5>
+                                <label name='logInError' id='logInError' style='color:red; display:none;'>Incorrect Log In Credentials, please try again.</label>
                                 <input type='text' name='username' id='username' class='form-control' placeholder='username'><br>
                                 <input type='text' name='password' id='password' class='form-control' placeholder='password'><br>
                                 <input type='submit' name='login' id='login' value='Log In' class='btn btn-info'>
@@ -86,7 +78,6 @@
                                     }
 
                                     if($type == "password"){
-                                        // echo "<label style='display:none;' name='passwordStrength' id='passwordStrength' style='font-size:6px;'><i>Strength: </i></label>";
                                         echo "<div style='display:none;' name='passwordStrength' id='passwordStrength'>
                                                 <p style='font-size:10px; margin-bottom:0;'>Password must contain at least:</p>
                                                 <ul style='font-size:10px; list-style:none'>                                               
@@ -109,7 +100,6 @@
                                 echo "<label style='display:none; color:red;' name='confirmPasswordLabel' id='confirmPasswordLabel'>Passwords don't match</label>";
                                 echo "<input type='password' name='confirmPassword' id='confirmPassword' class='form-control' placeholder='Confirm Password' onkeyup='confirmPasswordMatch()'><br>";
 
-                                // echo "<pre>".print_r($result,true)."</pre>";
                            echo"<input type='button' name='registerUser' id='registerUser' value='Register' class='btn btn-success' onclick='registerNewUser()'>
                                 <input type='submit' name='cancel' id='cancel' value='Cancel' class='btn btn-default'>
                             </form>
@@ -151,7 +141,31 @@
                     </div>";
             echo"</div></div></div>";
         }
-                                // echo "<pre>".print_r($_POST,true)."</pre>";
+
+        function checkLogIn($username,$password){
+            $_SESSION = array();
+            
+            $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+            $response = exeSQL($sql);
+            echo "<pre>".print_r($response,true)."</pre>";
+            if($response){
+                $_SESSION['username'] = $username;
+                $_SESSION['userID'] = $response[0]['id'];
+                $_SESSION['logedIn'] = "Yes";
+                $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
+                $_SESSION['time_logged_in'] = date('Y-m-d H:i:s');
+                $_SESSION['access_rights'] = getValues("users","access_rights","username='$username' AND id='{$response[0]['id']}'");
+                // $_SESSION['HTTP_FORWARD'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                // header("Location: admin/Models/Home/index.php");
+            }else if(!$response){
+                displayLogIn();
+                echo "<script>                     
+                        eval('userLoginError()');
+                      </script>";
+            }
+        }
+        // echo "<pre>".print_r($_POST,true)."</pre>";
+        // echo "<pre>".print_r($_SESSION,true)."</pre>";
 
     ?>
     </body>
