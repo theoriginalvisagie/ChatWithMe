@@ -1,7 +1,7 @@
 <?php
 
     session_start();
-    include_once("../../../Utilities/sqlClass.php");
+    include_once(dirname(__FILE__,4)."/Utilities/sqlClass.php");
     class Home{
         function __construct(){}
 
@@ -15,22 +15,22 @@
             // echo "<div class='container no-gutters' style='margin:0; padding:0;'>";
                 echo "<div class='row no-gutters'style='margin:0; padding:0; width:100%'>";
 
-                    echo "<div class='col-2' style='background-color:red'>";
+                    echo "<div class='col-3' style='background-color:red'>";
                     echo "YEYEYEYEYE";
                     echo "</div>";
 
-                    echo "<div class='col-10' style='background-color:yellow'>";
+                    echo "<div class='col-9' style='background-color:yellow'>";
                     $this->displaySettings();
                     echo "</div>";
 
                 echo "</div>";//row
                 echo "<div class='row no-gutters' style='margin:0; padding:0; height:96vh;'>";
 
-                    echo "<div class='col-2' >";
+                    echo "<div class='col-3' >";
                     $this->displayContactChats($_SESSION['userID']);
                     echo "</div>";
 
-                    echo "<div class='col-10' style='background-color:green;'>";
+                    echo "<div class='col-9' style='background-color:green;'>";
                     echo "</div>";
 
                 echo "</div>";//row
@@ -39,28 +39,66 @@
 
         function displaySettings(){
             
-            echo "<form method='post' style='float:right;'>
+            echo "<form method='post' style='float:right;'>                   
+                    <button type='button'  data-bs-toggle='modal' data-bs-target='#publicContacts'>
+                        <i class='fas fa-search'></i>
+                    </button>
                     <button><i class='fas fa-cog'></i></button>
                     <input type='submit' class='btn btn-default' value='Logout' name='logout' id='logout'>
                   </form>";
+
+            /*=====['Modal']=====*/
+            
+            // echo "<div class='modal fade' id='publicContacts' tabindex='-1' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+            //         <div class='modal-dialog'>
+            //         <div class='modal-content'>
+            //             <div class='modal-header'>
+            //             <h5 class='modal-title' id='publicContacts'>Search Public Contacts</h5>
+            //             <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+            //             </div>
+            //             <div class='modal-body'>";
+            //             echo "<input type='text' class='form-control' placeholder='Search Contacts' name='seacrgPublicContacts' id='searchPublicContacts' onkeyup='searchPublicContact(this.value)'><br>";
+            //             echo "<div name='publicContacts' id='publicContacts'>";
+            //             $this->displayPublicContacts();
+            //             echo "</div>";
+
+            //         echo"</div>
+            //             <div class='modal-footer'>
+            //             <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button>
+            //             <button type='button' class='btn btn-primary'>Save changes</button>
+            //             </div>
+            //         </div>
+            //         </div>
+            //     </div>";
+            /*==========*/
+        }
+
+        function displayPublicContacts($where=""){
+            $sql = "SELECT id,first_name,last_name FROM users $where ORDER BY first_name ASC";
+            $result = exeSQL($sql);
+
+            foreach($result as $key){
+                echo "<button type='button' class='btn btn-default' name='{$key['id']}' id='{$key['id']}'  onclick='addToContacts({$key['id']})'>{$key['first_name']} {$key['last_name']}</button><br>";
+            }
         }
 
         function displayContactChats($user){
-            echo "<ul class='nav nav-tabs' id='myTab' role='tablist'>
-                    <li class='nav-item'>
-                        <button class='nav-link active' id='chats-tab' data-bs-toggle='tab' role='tab' aria-controls='chats' data-bs-target='#chats'aria-current='page' onclick='getChats($user)' name='getUserChat' id='getUserChat'>Chats</button>
-                    </li>
-                    <li class='nav-item'>
-                        <button class='nav-link' id='contacts-tab' data-bs-toggle='tab' role='tab' aria-controls='contacts' data-bs-target='#contacts' onclick='getContacts($user)' name='getUserContacts' id='getUserContacts'>Contacts</button>
-                    </li>                       
-                </ul>";
+            echo "<nav>
+                    <div class='nav nav-tabs' id='nav-tab' role='tablist'>
+                        <button class='nav-link active' id='nav-chats-tab' data-bs-toggle='tab' data-bs-target='#nav-chats' type='button' role='tab' aria-controls='nav-chats' aria-selected='true'>Chats</button>
+                        <button class='nav-link' id='nav-contacts-tab' data-bs-toggle='tab' data-bs-target='#nav-contacts' type='button' role='tab' aria-controls='nav-contacts' aria-selected='false'>My Contacts</button>
+                        <button class='nav-link' id='nav-publicContacts-tab' data-bs-toggle='tab' data-bs-target='#nav-publicContacts' type='button' role='tab' aria-controls='nav-publicContacts' aria-selected='false'>Public Contacts</button>
+                    </div>
+                </nav>";
+
+              echo "<div class='tab-content' id='nav-tabContent'>";
 
                 /*=====[Chats]=====*/
-                echo "<div class='tab-pane fade' id='chats' role='tabpanel' aria-labelledby='profile-tab'>";
+                echo "<div class='tab-pane fade show active' id='nav-chats' role='tabpanel' aria-labelledby='nav-chats-tab'>";
                 echo "</div>";
                 /*==========*/
 
-                /*=====[Contacts]=====*/
+                /*=====[My Contacts]=====*/
                 $sql = "SELECT id,first_name,last_name FROM users ORDER BY first_name ASC";
                 $result = exeSQL($sql);
 
@@ -68,7 +106,7 @@
                     $letters[] = substr($hasLetter['first_name'],0,1);
                 }
 
-                echo "<div class='tab-pane fade' id='contacts' role='tabpanel' aria-labelledby='profile-tab'>";
+                echo "<div class='tab-pane fade' id='nav-contacts' role='tabpanel' aria-labelledby='nav-contacts-tab'>";
                 echo "<div class='accordion' id='accordionExample'>";
                 for ($i = 65; $i<=90; $i++){
                    
@@ -83,12 +121,10 @@
                                 <div id='collapse_$letter' class='accordion-collapse collapse' aria-labelledby='heading_$letter' data-bs-parent='#accordionExample'>
                                 <div class='accordion-body'>";
                                 foreach($result as $key){
-                                    // echo $key['first_name'];
                                     if(substr($key['first_name'],0,1)==$letter){
                                         echo "<button name='' id='' class='btn btn-default'>{$key['first_name']} {$key['last_name']}</button>";
                                     }
                                 }
-                                    // <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
                         echo "</div>
                                 </div>
                             </div>";
@@ -96,6 +132,17 @@
                 }
                 echo "</div></div>";
                 /*==========*/
+
+                /*=====[Public Contacts]=====*/
+                echo "<div class='tab-pane fade' id='nav-publicContacts' role='tabpanel' aria-labelledby='nav-publicContacts-tab'>";
+                echo "<br><input type='text' class='form-control' placeholder='Search Contacts' name='seacrgPublicContacts' id='searchPublicContacts' onkeyup='searchPublicContact(this.value)'><br>";;
+                echo "<div id='contactsPublic'>";
+                $this->displayPublicContacts();
+                echo"</div>";
+                echo "</div>";
+                /*==========*/
+
+                echo "</div>";
 
         }
     }
