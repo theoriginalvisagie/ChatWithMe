@@ -2,6 +2,7 @@
 
     session_start();
     include_once(dirname(__FILE__,4)."/Utilities/sqlClass.php");
+    require_once("../Profile/User_profile.php");
     class Home{
         function __construct(){}
 
@@ -20,7 +21,7 @@
                     echo "</div>";
 
                     echo "<div class='col-9' style='background-color:yellow'>";
-                    $this->displaySettings();
+                    $this->displayToolBar($_SESSION['userID']);
                     echo "</div>";
 
                 echo "</div>";//row
@@ -31,19 +32,22 @@
                     echo "</div>";
 
                     echo "<div class='col-9' style='background-color:green;'>";
+                    if(isset($_GET['user']) && !empty($_GET['user'])){
+                        $userProfile = new UserProfile();
+                        $userProfile->myProfile();
+                    }
                     echo "</div>";
 
                 echo "</div>";//row
             // echo "</div>";//container
         }
 
-        function displaySettings(){
-            
+        function displayToolBar($user){
             echo "<form method='post' style='float:right;'>                   
                     <button type='button'  data-bs-toggle='modal' data-bs-target='#publicContacts'>
                         <i class='fas fa-search'></i>
                     </button>
-                    <button><i class='fas fa-cog'></i></button>
+                    <a href='../Profile/index.php?user=$user' ><i class='fas fa-cog'></i></a>
                     <input type='submit' class='btn btn-default' value='Logout' name='logout' id='logout'>
                   </form>";
 

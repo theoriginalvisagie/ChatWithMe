@@ -148,6 +148,11 @@
             $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
             $response = exeSQL($sql);
             if($response){
+                $loginAmount = getValues("users","login_amount","id='{$response[0]['id']}'");
+                if(empty($loginAmount)){
+                    $loginAmount = 0;
+                }
+                $loginAmount++;
                 session_start();
                 $_SESSION['username'] = $username;
                 $_SESSION['userID'] = $response[0]['id'];
@@ -155,6 +160,7 @@
                 $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
                 $_SESSION['time_logged_in'] = date('Y-m-d H:i:s');
                 $_SESSION['access_rights'] = getValues("users","access_rights","username='$username' AND id='{$response[0]['id']}'");
+                updateData("UPDATE users SET login_amount='$loginAmount' WHERE id='{$response[0]['id']}'");
                 header("Location: admin/Models/Home/index.php");
             }else if(!$response){
                 displayLogIn();
@@ -164,7 +170,7 @@
             }
         }
         // echo "<pre>".print_r($_POST,true)."</pre>";
-        echo "<pre>".print_r($_SESSION,true)."</pre>";
+        // echo "<pre>".print_r($_SESSION,true)."</pre>";
 
     ?>
     </body>
