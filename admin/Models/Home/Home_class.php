@@ -49,48 +49,75 @@
 
             /*=====['Modal']=====*/
             
-            // echo "<div class='modal fade' id='publicContacts' tabindex='-1' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-            //         <div class='modal-dialog'>
-            //         <div class='modal-content'>
-            //             <div class='modal-header'>
-            //             <h5 class='modal-title' id='publicContacts'>Search Public Contacts</h5>
-            //             <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-            //             </div>
-            //             <div class='modal-body'>";
-            //             echo "<input type='text' class='form-control' placeholder='Search Contacts' name='seacrgPublicContacts' id='searchPublicContacts' onkeyup='searchPublicContact(this.value)'><br>";
-            //             echo "<div name='publicContacts' id='publicContacts'>";
-            //             $this->displayPublicContacts();
-            //             echo "</div>";
+            echo "<div class='modal fade' id='publicContacts' tabindex='-1' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                    <div class='modal-dialog'>
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                        <h5 class='modal-title' id='publicContacts'>Search Public Contacts</h5>
+                        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                        </div>
+                        <div class='modal-body'>";
+                        echo "<input type='text' class='form-control' placeholder='Search Contacts' name='seacrgPublicContacts' id='searchPublicContacts' onkeyup='searchPublicContact(this.value)'><br>";
+                        echo "<div name='publicContactsModalContent' id='publicContactsModalContent'>";
+                        $this->displayPublicContacts();
+                        echo "</div>";
 
-            //         echo"</div>
-            //             <div class='modal-footer'>
-            //             <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button>
-            //             <button type='button' class='btn btn-primary'>Save changes</button>
-            //             </div>
-            //         </div>
-            //         </div>
-            //     </div>";
+                    echo"</div>
+                        <div class='modal-footer'>
+                        <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button>
+                        <button type='button' class='btn btn-primary'>Save changes</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>";
             /*==========*/
         }
 
         function displayPublicContacts($where=""){
+            $dontDisplayContact = array();
+            $sql = "SELECT contact FROM my_circle WHERE user='{$_SESSION['userID']}'";
+            $result = exeSQL($sql);
+
+            if($result){
+                foreach($result as $key){
+                    $dontDisplayContact[] = $key['contact'];
+                }
+    
+                $dontDisplayContact = implode(",",$dontDisplayContact);
+            }
+            
+            if(empty($where)){
+                $where = "WHERE is_public='1'";
+                if(!empty($dontDisplayContact)){
+                    $where .= " AND id NOT IN($dontDisplayContact)";
+                }
+            }
+
+            
             $sql = "SELECT id,first_name,last_name FROM users $where ORDER BY first_name ASC";
             $result = exeSQL($sql);
 
-            foreach($result as $key){
-                echo "<button type='button' class='btn btn-default' name='{$key['id']}' id='{$key['id']}'  onclick='addToContacts({$key['id']})'>{$key['first_name']} {$key['last_name']}</button><br>";
+            if($result){
+                foreach($result as $key){
+                    echo "<input type='button' class='btn btn-default' name='{$key['id']}' id='{$key['id']}_{$key['last_name']}' onclick='addToMyCircle({$key['id']},\"{$key['last_name']}\")' value='{$key['first_name']} {$key['last_name']}'><br>";//</button>
+                }
+            }else{
+                echo "<div class='alert alert-danger'>No Contacts To Display</div>";
             }
+
+            //  echo "<pre>".print_r($result,true)."</pre>";
+            
         }
 
         function displayContactChats($user){
             echo "<nav>
                     <div class='nav nav-tabs' id='nav-tab' role='tablist'>
                         <button class='nav-link active' id='nav-chats-tab' data-bs-toggle='tab' data-bs-target='#nav-chats' type='button' role='tab' aria-controls='nav-chats' aria-selected='true'>Chats</button>
-                        <button class='nav-link' id='nav-contacts-tab' data-bs-toggle='tab' data-bs-target='#nav-contacts' type='button' role='tab' aria-controls='nav-contacts' aria-selected='false'>My Contacts</button>
-                        <button class='nav-link' id='nav-publicContacts-tab' data-bs-toggle='tab' data-bs-target='#nav-publicContacts' type='button' role='tab' aria-controls='nav-publicContacts' aria-selected='false'>Public Contacts</button>
-                    </div>
+                        <button class='nav-link' id='nav-myCircle-tab' data-bs-toggle='tab' data-bs-target='#nav-myCircle' type='button' role='tab' aria-controls='nav-myCircle' aria-selected='false'>My Circle</button>
+                        </div>
                 </nav>";
-
+                //<button class='nav-link' id='nav-publicContacts-tab' data-bs-toggle='tab' data-bs-target='#nav-publicContacts' type='button' role='tab' aria-controls='nav-publicContacts' aria-selected='false'>Public Contacts</button>
+                    
               echo "<div class='tab-content' id='nav-tabContent'>";
 
                 /*=====[Chats]=====*/
@@ -99,14 +126,17 @@
                 /*==========*/
 
                 /*=====[My Contacts]=====*/
-                $sql = "SELECT id,first_name,last_name FROM users ORDER BY first_name ASC";
+                $sql = "SELECT u.id,u.first_name,u.last_name FROM users u
+                        LEFT JOIN my_circle mc ON mc.contact=u.id
+                        WHERE mc.user='{$_SESSION['userID']}'
+                        ORDER BY first_name ASC";
                 $result = exeSQL($sql);
 
                 foreach($result as $hasLetter){
                     $letters[] = substr($hasLetter['first_name'],0,1);
                 }
 
-                echo "<div class='tab-pane fade' id='nav-contacts' role='tabpanel' aria-labelledby='nav-contacts-tab'>";
+                echo "<div class='tab-pane fade' id='nav-myCircle' role='tabpanel' aria-labelledby='nav-myCircle-tab'>";
                 echo "<div class='accordion' id='accordionExample'>";
                 for ($i = 65; $i<=90; $i++){
                    
@@ -134,12 +164,15 @@
                 /*==========*/
 
                 /*=====[Public Contacts]=====*/
-                echo "<div class='tab-pane fade' id='nav-publicContacts' role='tabpanel' aria-labelledby='nav-publicContacts-tab'>";
-                echo "<br><input type='text' class='form-control' placeholder='Search Contacts' name='seacrgPublicContacts' id='searchPublicContacts' onkeyup='searchPublicContact(this.value)'><br>";;
-                echo "<div id='contactsPublic'>";
-                $this->displayPublicContacts();
-                echo"</div>";
-                echo "</div>";
+                /**
+                 * Third Tab on Left menu for public contacts menu
+                 */
+                // echo "<div class='tab-pane fade' id='nav-publicContacts' role='tabpanel' aria-labelledby='nav-publicContacts-tab'>";
+                // echo "<br><input type='text' class='form-control' placeholder='Search Contacts' name='seacrgPublicContacts' id='searchPublicContacts' onkeyup='searchPublicContact(this.value)'><br>";;
+                // echo "<div id='contactsPublic'>";
+                // $this->displayPublicContacts();
+                // echo"</div>";
+                // echo "</div>";
                 /*==========*/
 
                 echo "</div>";

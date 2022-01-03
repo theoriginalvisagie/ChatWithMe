@@ -152,9 +152,11 @@
 
         $result = $result[0][$column];
 
-        return $result;
-
-
-
+        if($result){
+            return $result;
+        }else{
+            return false;
+        }
+        
     }
 ?>
