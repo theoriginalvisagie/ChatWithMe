@@ -18,7 +18,7 @@ function addToMyCircle(id,last_name=''){
     var contact = document.getElementById(id+"_"+last_name).value;
     
     $.ajax({
-        url: "ajax/ajaxContacts.php",
+        url: "http://localhost/ChatWithMe/admin/Models/Home/ajax/ajaxContacts.php",
         type: 'post',
         data: ({"action":"addToMyCircle","id":id}),
         success: function (response) {
@@ -30,16 +30,9 @@ function addToMyCircle(id,last_name=''){
                     text: contact + " is allready part of your circle."
                   })
             }else if(response == "true"){
-                // Swal.fire({
-                //     icon: 'success',
-                //     title: 'Contact Added',
-                //     text: contact + " added to your circle."
-                //   }).then((result) => {
                     console.log("before");
                     refreshPublicContactsList();
                     console.log("After");
-                //   })
-
             }else{
                 Swal.fire({
                     icon: 'error',
@@ -53,7 +46,7 @@ function addToMyCircle(id,last_name=''){
 
 function refreshPublicContactsList(){
     $.ajax({
-        url: "ajax/ajaxContacts.php",
+        url: "http://localhost/ChatWithMe/admin/Models/Home/ajax/ajaxContacts.php",
         type: 'post',
         data: ({"action":"refreshPublicContactsList"}),
         dataType: "html",

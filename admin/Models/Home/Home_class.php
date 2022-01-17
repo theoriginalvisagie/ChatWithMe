@@ -2,7 +2,7 @@
 
     session_start();
     include_once(dirname(__FILE__,4)."/Utilities/sqlClass.php");
-    require_once("../Profile/User_profile.php");
+    require_once(dirname(__FILE__,4)."/admin/Models/Profile/User_profile.php");
     class Home{
         function __construct(){}
 
@@ -63,7 +63,7 @@
                         <div class='modal-body'>";
                         echo "<input type='text' class='form-control' placeholder='Search Contacts' name='seacrgPublicContacts' id='searchPublicContacts' onkeyup='searchPublicContact(this.value)'><br>";
                         echo "<div name='publicContactsModalContent' id='publicContactsModalContent'>";
-                        $this->displayPublicContacts();
+                        $this->displayPublicContacts($user);
                         echo "</div>";
 
                     echo"</div>
@@ -77,9 +77,10 @@
             /*==========*/
         }
 
-        function displayPublicContacts($where=""){
+        function displayPublicContacts($user,$where=""){
+            $userName = getValues("users","first_name","id='$user'")."_".getValues("users","last_name","id='$user'");
             $dontDisplayContact = array();
-            $sql = "SELECT contact FROM my_circle WHERE user='{$_SESSION['userID']}'";
+            $sql = "SELECT contact FROM my_circle_{$user}_{$userName} WHERE user='{$_SESSION['userID']}'";
             $result = exeSQL($sql);
 
             if($result){
@@ -108,12 +109,12 @@
             }else{
                 echo "<div class='alert alert-danger'>No Contacts To Display</div>";
             }
-
-            //  echo "<pre>".print_r($result,true)."</pre>";
             
         }
 
         function displayContactChats($user){
+            $userName = getValues("users","first_name","id='$user'")."_".getValues("users","last_name","id='$user'");
+
             echo "<nav>
                     <div class='nav nav-tabs' id='nav-tab' role='tablist'>
                         <button class='nav-link active' id='nav-chats-tab' data-bs-toggle='tab' data-bs-target='#nav-chats' type='button' role='tab' aria-controls='nav-chats' aria-selected='true'>Chats</button>
@@ -131,38 +132,45 @@
 
                 /*=====[My Contacts]=====*/
                 $sql = "SELECT u.id,u.first_name,u.last_name FROM users u
-                        LEFT JOIN my_circle mc ON mc.contact=u.id
-                        WHERE mc.user='{$_SESSION['userID']}'
+                        LEFT JOIN my_circle_{$user}_{$userName} mc ON mc.contact=u.id
+                        WHERE mc.user='$user'
                         ORDER BY first_name ASC";
                 $result = exeSQL($sql);
 
-                foreach($result as $hasLetter){
-                    $letters[] = substr($hasLetter['first_name'],0,1);
+                if($result){
+                    foreach($result as $hasLetter){
+                        $letters[] = substr($hasLetter['first_name'],0,1);
+                    }
                 }
+                
 
                 echo "<div class='tab-pane fade' id='nav-myCircle' role='tabpanel' aria-labelledby='nav-myCircle-tab'>";
                 echo "<div class='accordion' id='accordionExample'>";
-                for ($i = 65; $i<=90; $i++){
-                   
-                    $letter = chr($i);
-                    if(in_array($letter, $letters)){
-                        echo "<div class='accordion-item'>
-                                <h2 class='accordion-header' id='heading_$letter'>
-                                <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse_$letter' aria-expanded='false' aria-controls='collapse_$letter'>
-                                    $letter
-                                </button>
-                                </h2>
-                                <div id='collapse_$letter' class='accordion-collapse collapse' aria-labelledby='heading_$letter' data-bs-parent='#accordionExample'>
-                                <div class='accordion-body'>";
-                                foreach($result as $key){
-                                    if(substr($key['first_name'],0,1)==$letter){
-                                        echo "<button name='' id='' class='btn btn-default'>{$key['first_name']} {$key['last_name']}</button>";
+                if($result){
+                    for ($i = 65; $i<=90; $i++){
+                    
+                        $letter = chr($i);
+                        if(in_array($letter, $letters)){
+                            echo "<div class='accordion-item'>
+                                    <h2 class='accordion-header' id='heading_$letter'>
+                                    <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse_$letter' aria-expanded='false' aria-controls='collapse_$letter'>
+                                        $letter
+                                    </button>
+                                    </h2>
+                                    <div id='collapse_$letter' class='accordion-collapse collapse' aria-labelledby='heading_$letter' data-bs-parent='#accordionExample'>
+                                    <div class='accordion-body'>";
+                                    foreach($result as $key){
+                                        if(substr($key['first_name'],0,1)==$letter){
+                                            echo "<button name='' id='' class='btn btn-default'>{$key['first_name']} {$key['last_name']}</button>";
+                                        }
                                     }
-                                }
-                        echo "</div>
-                                </div>
-                            </div>";
+                            echo "</div>
+                                    </div>
+                                </div>";
+                        }
                     }
+                }else{
+                    echo "<div class='alert alert-info'>Please Add Contacts to your circle</div>";
                 }
                 echo "</div></div>";
                 /*==========*/

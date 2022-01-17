@@ -1,7 +1,8 @@
 
 
 <?php
-    require_once("../Home/Home_class.php");
+    require_once(dirname(__FILE__,4)."/admin/Models/Home/Home_class.php");
+    // require_once("../Home/Home_class.php");
     include_once(dirname(__FILE__,4)."/Utilities/sqlClass.php");
 
     class UserProfile extends Home{
@@ -80,6 +81,15 @@
                             contact INT(11),
                             PRIMARY KEY (id)
                         )";
+
+            $my_chat = "CREATE TABLE my_chat_{$user}_{$userName} (
+                            id int NOT NULL AUTO_INCREMENT,
+                            user INT(11),
+                            contact INT(11),
+                            messages text,
+                            dateSent TIMESTAMP,
+                            PRIMARY KEY (id)
+                        )";
             // echo $user_profile;
             $success = 0;
             $response = createTable($user_profile);
@@ -92,7 +102,12 @@
                 $success ++;
             }
 
-            if($success == 2){
+            $response = createTable($my_chat);
+            if($response){
+                $success ++;
+            }
+
+            if($success == 3){
                 $loginAmount = getValues("users","login_amount","id='$user'");
                 $loginAmount ++;
                 updateData("UPDATE users SET login_amount='$loginAmount' WHERE id='$user'");

@@ -150,7 +150,10 @@
         $sql = "SELECT $column FROM $table WHERE $where";
         $result = exeSQL($sql);
 
-        $result = $result[0][$column];
+        if($result){
+            $result = $result[0][$column];
+        }
+        
 
         if($result){
             return $result;
