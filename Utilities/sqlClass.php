@@ -73,16 +73,14 @@
         $results = array();
 
         if ($result->num_rows > 0) {
-            $i=0;
             while($row = $result->fetch_assoc()) {
                 foreach($row as $key=>$value){
-                    $results[$i][$key] = $value;                   
+                    $results[$key] = $value;                   
                 }
-                $i++;
             }
         }
 
-        return $results;
+        return $row;
         $conn->close();
     }
 
@@ -150,16 +148,16 @@
         $sql = "SELECT $column FROM $table WHERE $where";
         $result = exeSQL($sql);
 
-        if($result){
-            $result = $result[0][$column];
-        }
+        // if($result){
+        //     $resultValue = $result[0][$column];
+        // }
         
 
-        if($result){
-            return $result;
-        }else{
-            return false;
-        }
+        // if(!empty($resultValue)){
+        //     return $resultValue;
+        // }else{
+        //     return false;
+        // }
         
     }
 

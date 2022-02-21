@@ -31,7 +31,13 @@
                     $this->displayContactChats($_SESSION['userID']);
                     echo "</div>";
 
-                    echo "<div class='col-9' style='background-color:green;'>";
+                    echo "<div class='col-9' style='background-color:white;'>";
+                    $sql = "SELECT * FROM my_circle_1_christiaan_visagie m
+                            LEFT JOIN users u ON u.id=m.user
+                            LEFT JOIN users uu ON uu.id=m.contact";
+                    $result = exeSQL($sql);
+                    // $arr = getValues("my_circle_1_christiaan_visagie","contact","id='2'");
+                    echo "<pre>".print_r($result,true)."</pre>";
                     if(isset($_GET['user']) && !empty($_GET['user'])){
                         $userProfile = new UserProfile();
                         $userProfile->myProfile();

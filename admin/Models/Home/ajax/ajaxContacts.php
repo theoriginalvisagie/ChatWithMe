@@ -6,24 +6,29 @@
     if($_POST['action'] == "searchPublicContact"){
         $where = "WHERE is_public='1' AND  (first_name LIKE '%{$_POST['value']}%' OR last_name LIKE '%{$_POST['value']}%')";
         $class->displayPublicContacts($where);
-    }else if($_POST['action'] == "addToMyCircle"){
-        $userName = "christiaan_visagie";
-        // $userName = strtolower(getValues("users","first_name","id='{$_SESSION['userID']}'")."_".getValues("users","last_name","id='{$_SESSION['userID']}'"));
-        // $checkExists = getValues("my_circle_{$_SESSION['userID']}_{$userName}","contact","user='{$_SESSION['userID']}' AND contact='{$_POST['id']}'");
-        $checkExists = getValues("my_circle_{$_SESSION['userID']}_{$userName}","contact","user='{$_SESSION['userID']}' AND contact='{$_POST['id']}'");
-        echo"HERER".$checkExists;
-        if(!$checkExists){           
-            $sql = "INSERT INTO my_circle_{$_SESSION['userID']}_$userName(user,contact) VALUES('{$_SESSION['userID']}', '{$_POST['id']}')";
+    }else if($_POST['action'] == "addToMyCircle"){       
+        $userID = $_SESSION['userID'];
+        $userName = strtolower(getValues("users","first_name","id='$userID'")."_".getValues("users","last_name","id='$userID'"));
+        $db = "my_circle_".$userID."_".$userName;
+        $contactID = $_POST['id'];
+
+        $checkExists = getValues($db,"contact","contact='$contactID'");
+
+        if(!$checkExists){ 
+            $return = "";         
+            $sql = "INSERT INTO $db(user,contact) VALUES('$userID', '$contactID')";
             $response = sqlINSERT($sql);
 
             if($response){
-                echo "true";
+                $return = "true";
             }else{
-                echo "false";
+                $return = "false";
             }
         }else{
-            echo "contact exists";
+            $return = "contact exists";
         }
+
+        echo $return;
         
     }else if($_POST['action'] == "refreshPublicContactsList"){
         $class->displayPublicContacts($where);
